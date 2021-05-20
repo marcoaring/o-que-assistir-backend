@@ -1,7 +1,11 @@
 import axios from 'axios';
 import express from 'express';
 
+import authMiddleware from '../../middleware/auth';
+
 const settings = express.Router();
+
+settings.use(authMiddleware);
 
 settings.get('/settings', async (req, res) => {
   try {
