@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export default (req: any, res: any, next: any) => {
+export default (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -19,7 +19,7 @@ export default (req: any, res: any, next: any) => {
     return res.status(401).send({ error: 'Token malformatted' });
   }
 
-  jwt.verify(token, process.env.AUTHENTICATE_HASH || '', (err: any, decoded: any) => {
+  jwt.verify(token, process.env.AUTHENTICATE_HASH, (err, decoded) => {
     if (err) {
       return res.status(401).send({ error: 'Token invalid' });
     }

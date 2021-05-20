@@ -1,11 +1,9 @@
 /* eslint-disable func-names */
-import { Schema, Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-import { IUser } from '../../interfaces/user.interface';
 import mongoose from '../../database';
 
-const UserSchema: Schema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     require: true,
@@ -27,13 +25,13 @@ const UserSchema: Schema = new mongoose.Schema({
   },
 });
 
-UserSchema.pre<IUser>('save', async function (next) {
-  const hash = await bcrypt.hash(this.password || '', 10);
+UserSchema.pre('save', async function (next) {
+  const hash = await bcrypt.hash(this.password, 10);
   this.password = hash;
 
   next();
 });
 
-const User: Model<IUser> = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
 
 export default User;
