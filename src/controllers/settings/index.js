@@ -5,9 +5,7 @@ import authMiddleware from '../../middleware/auth';
 
 const settings = express.Router();
 
-settings.use(authMiddleware);
-
-settings.get('/settings', async (req, res) => {
+settings.get('/settings', authMiddleware, async (req, res) => {
   try {
     const url = `${process.env.API_URL_MOVIEDB}configuration`;
     const configurations = (await axios.get(url)).data;
@@ -17,7 +15,7 @@ settings.get('/settings', async (req, res) => {
       secureBaseUrl: configurations.images.secure_base_url,
     });
   } catch (err) {
-    return res.status(400).send({ error: 'Failed' });
+    return res.status(400).send({ error: 'Falha ao receber as configurações.' });
   }
 });
 
