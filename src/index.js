@@ -1,5 +1,6 @@
 import axios from 'axios';
 import express from 'express';
+import cors from 'cors';
 
 import auth from './controllers/auth';
 import movies from './controllers/movies';
@@ -12,6 +13,7 @@ axios.defaults.headers.common.Authorization = `Bearer ${process.env.AUTHORIZATIO
 const app = express();
 const port = process.env.SERVER_PORT;
 
+app.use(cors());
 app.use(express.json());
 app.use('/api', [auth, movies, search, settings, users]);
 
