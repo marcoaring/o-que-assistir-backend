@@ -5,7 +5,6 @@ import cors from 'cors';
 import auth from './controllers/auth';
 import movies from './controllers/movies';
 import search from './controllers/search';
-import settings from './controllers/settings';
 import users from './controllers/users';
 
 axios.defaults.headers.common.Authorization = `Bearer ${process.env.AUTHORIZATION_MOVIEDB}`;
@@ -15,7 +14,7 @@ const port = process.env.SERVER_PORT;
 
 app.use(cors());
 app.use(express.json());
-app.use('/api', [auth, movies, search, settings, users]);
+app.use('/api', [auth, movies, search, users]);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
