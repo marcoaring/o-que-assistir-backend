@@ -27,7 +27,9 @@ search.get('/search/author', authMiddleware, async (req, res) => {
       if (person.profile_path) {
         authors.push({
           id: person.id,
-          image: person.profile_path,
+          image: `${
+            process.env.NODE_ENV === 'dev' ? 'http' : 'https'
+          }://image.tmdb.org/t/p/original${person.profile_path}`,
           name: person.name,
           popularity: person.popularity,
         });
