@@ -9,23 +9,23 @@ const defaultParams = {
   language: 'pt-BR',
 };
 
-search.get('/search/author', authMiddleware, async (req, res) => {
+search.get('/search/actor', authMiddleware, async (req, res) => {
   try {
-    if (req.query.author.length < 3) {
+    if (req.query.actor.length < 3) {
       return res
         .status(400)
         .send({ error: 'Mínimo de três caracteres necessários para fazer a consulta.' });
     }
 
-    defaultParams.query = req.query.author;
+    defaultParams.query = req.query.actor;
 
     const url = `${process.env.API_URL_MOVIEDB}search/person`;
-    const authors = [];
+    const actors = [];
     const result = (await axios.get(url, { params: defaultParams })).data.results;
 
     result.map((person) => {
       if (person.profile_path) {
-        authors.push({
+        actors.push({
           id: person.id,
           image: `${
             process.env.NODE_ENV === 'dev' ? 'http' : 'https'
@@ -36,13 +36,13 @@ search.get('/search/author', authMiddleware, async (req, res) => {
       }
     });
 
-    authors.sort((person, personCompare) => {
+    actors.sort((person, personCompare) => {
       if (person.popularity < personCompare.popularity) return 1;
       if (person.popularity > personCompare.popularity) return -1;
       return 0;
     });
 
-    return res.json({ authors, status: 'Sucesso' });
+    return res.json({ actors, status: 'Sucesso' });
   } catch (err) {
     return res.status(400).send({ error: 'Falha ao receber as pessoas.' });
   }
