@@ -44,13 +44,6 @@ movies.get('/films/streamings', authMiddleware, async (req, res) => {
       });
     });
 
-    streamings.sort((a, b) => {
-      const x = a.name.toUpperCase();
-      const y = b.name.toUpperCase();
-
-      return x === y ? 0 : x > y ? 1 : -1;
-    });
-
     return res.json({ streamings, status: 'Sucesso' });
   } catch (err) {
     return res.status(400).send({ error: 'Falha ao receber os stramings.' });
