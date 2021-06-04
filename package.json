@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf build",
-    "start": "nodemon -r dotenv-safe/config -r esm src/index.js"
+    "serve": "nodemon -r dotenv-safe/config -r esm src/index.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
