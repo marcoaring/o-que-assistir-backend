@@ -139,17 +139,21 @@ search.get('/search/movie', authMiddleware, async (req, res) => {
             }
 
             return {
-              background: `${
-                process.env.NODE_ENV === 'dev' ? 'http' : 'https'
-              }://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+              background: movie.backdrop_path
+                ? `${
+                    process.env.NODE_ENV === 'dev' ? 'http' : 'https'
+                  }://image.tmdb.org/t/p/original${movie.backdrop_path}`
+                : null,
               description: truncateString(movie.overview),
               genres: movie.genre_ids,
               id: movie.id,
               overview: movie.overview,
               popularity: movie.popularity,
-              poster: `${
-                process.env.NODE_ENV === 'dev' ? 'http' : 'https'
-              }://image.tmdb.org/t/p/original${movie.poster_path}`,
+              poster: movie.poster_path
+                ? `${
+                    process.env.NODE_ENV === 'dev' ? 'http' : 'https'
+                  }://image.tmdb.org/t/p/original${movie.poster_path}`
+                : null,
               release_date: movie.release_date,
               streamings: streaming,
               title: movie.title,
