@@ -2,6 +2,7 @@ import axios from 'axios';
 import express from 'express';
 
 import authMiddleware from '../../middleware/auth';
+import { truncateString } from '../../services/utils';
 
 const search = express.Router();
 const defaultParams = {
@@ -136,9 +137,10 @@ search.get('/search/movie', authMiddleware, async (req, res) => {
               background: `${
                 process.env.NODE_ENV === 'dev' ? 'http' : 'https'
               }://image.tmdb.org/t/p/original${movie.backdrop_path}`,
-              description: movie.overview,
+              description: truncateString(movie.overview),
               genres: movie.genre_ids,
               id: movie.id,
+              overview: movie.overview,
               popularity: movie.popularity,
               poster: `${
                 process.env.NODE_ENV === 'dev' ? 'http' : 'https'
