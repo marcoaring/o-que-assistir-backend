@@ -2,7 +2,7 @@ import axios from 'axios';
 import express from 'express';
 
 import authMiddleware from '../../middleware/auth';
-import { truncateString } from '../../services/utils';
+import { getRandomInt, truncateString } from '../../services/utils';
 
 const search = express.Router();
 const defaultParams = {
@@ -51,9 +51,7 @@ search.get('/search/actor', authMiddleware, async (req, res) => {
 
 search.get('/search/movie', authMiddleware, async (req, res) => {
   try {
-    const params = {
-      sort_by: 'popularity.desc',
-    };
+    const params = {};
 
     if (req.query.actors) {
       params.with_people = req.query.actors;
@@ -71,6 +69,13 @@ search.get('/search/movie', authMiddleware, async (req, res) => {
       params.with_watch_providers = req.query.streamings;
       params.watch_region = 'BR';
     }
+
+    if (Object.getOwnPropertyNames(params).length === 0) {
+      const random = getRandomInt(1885, new Date().getFullYear());
+      params.primary_release_year = random;
+    }
+
+    params.sort_by = 'vote_count.desc';
 
     Object.assign(params, defaultParams);
 
