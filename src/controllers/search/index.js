@@ -68,6 +68,7 @@ search.get('/search/movie', authMiddleware, async (req, res) => {
 
     if (req.query.streamings) {
       params.with_watch_providers = req.query.streamings;
+      params.watch_region = 'BR';
     }
 
     Object.assign(params, defaultParams);
@@ -77,31 +78,58 @@ search.get('/search/movie', authMiddleware, async (req, res) => {
         axios
           .get(`${process.env.API_URL_MOVIEDB}movie/${movie.id}/watch/providers`)
           .then((streamings) => {
-            const streaming = {
+            let streaming = {
               buy: [],
+              flatrate: [],
               rent: [],
             };
 
             if (streamings.data.results.BR) {
-              streamings.data.results.BR.buy.map((streamingBuy) => {
-                streaming.buy.push({
-                  id: streamingBuy.provider_id,
-                  logo: `${
-                    process.env.NODE_ENV === 'dev' ? 'http' : 'https'
-                  }://image.tmdb.org/t/p/original${streamingBuy.logo_path}`,
-                  name: streamingBuy.provider_name,
+              if (streamings.data.results.BR.buy) {
+                streamings.data.results.BR.buy.map((streamingBuy) => {
+                  streaming.buy.push({
+                    id: streamingBuy.provider_id,
+                    logo: `${
+                      process.env.NODE_ENV === 'dev' ? 'http' : 'https'
+                    }://image.tmdb.org/t/p/original${streamingBuy.logo_path}`,
+                    name: streamingBuy.provider_name,
+                  });
                 });
-              });
+              }
 
-              streamings.data.results.BR.rent.map((streamingRent) => {
-                streaming.rent.push({
-                  id: streamingRent.provider_id,
-                  logo: `${
-                    process.env.NODE_ENV === 'dev' ? 'http' : 'https'
-                  }://image.tmdb.org/t/p/original${streamingRent.logo_path}`,
-                  name: streamingRent.provider_name,
+              if (streamings.data.results.BR.flatrate) {
+                streamings.data.results.BR.flatrate.map((streamingFlatrate) => {
+                  streaming.flatrate.push({
+                    id: streamingFlatrate.provider_id,
+                    logo: `${
+                      process.env.NODE_ENV === 'dev' ? 'http' : 'https'
+                    }://image.tmdb.org/t/p/original${streamingFlatrate.logo_path}`,
+                    name: streamingFlatrate.provider_name,
+                  });
                 });
-              });
+              }
+
+              if (streamings.data.results.BR.rent) {
+                streamings.data.results.BR.rent.map((streamingRent) => {
+                  streaming.rent.push({
+                    id: streamingRent.provider_id,
+                    logo: `${
+                      process.env.NODE_ENV === 'dev' ? 'http' : 'https'
+                    }://image.tmdb.org/t/p/original${streamingRent.logo_path}`,
+                    name: streamingRent.provider_name,
+                  });
+                });
+              }
+
+              if (
+                streaming.buy.length === 0 &&
+                streaming.flatrate.length === 0 &&
+                streaming.rent.length === 0
+              ) {
+                streaming = null;
+              }
+            } else {
+              streaming = null;
             }
 
             return {
@@ -116,7 +144,7 @@ search.get('/search/movie', authMiddleware, async (req, res) => {
                 process.env.NODE_ENV === 'dev' ? 'http' : 'https'
               }://image.tmdb.org/t/p/original${movie.poster_path}`,
               release_date: movie.release_date,
-              streamings: streamings.data.results.BR ? streaming : null,
+              streamings: streaming,
               title: movie.title,
               vote: movie.vote_average,
             };
