@@ -10,7 +10,7 @@ import users from './controllers/users';
 axios.defaults.headers.common.Authorization = `Bearer ${process.env.AUTHORIZATION_MOVIEDB}`;
 
 const app = express();
-const port = process.env.SERVER_PORT;
+const port = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
