@@ -52,6 +52,7 @@ search.get('/search/actor', authMiddleware, async (req, res) => {
 search.get('/search/movie', authMiddleware, async (req, res) => {
   try {
     const params = {};
+    let random = null;
 
     if (req.query.actors) {
       params.with_people = req.query.actors;
@@ -71,7 +72,10 @@ search.get('/search/movie', authMiddleware, async (req, res) => {
     }
 
     if (Object.getOwnPropertyNames(params).length === 0) {
-      const random = getRandomInt(1885, new Date().getFullYear());
+      random = getRandomInt(1885, new Date().getFullYear());
+    }
+
+    if (random) {
       params.primary_release_year = random;
     }
 
@@ -162,7 +166,9 @@ search.get('/search/movie', authMiddleware, async (req, res) => {
           })
       );
 
-      return Promise.all(promises).then((movies) => res.json({ movies, status: 'Sucesso' }));
+      return Promise.all(promises).then((movies) =>
+        res.json({ movies, selectedYear: random, status: 'Sucesso' })
+      );
     });
   } catch (err) {
     return res.status(400).send({ error: 'Falha ao encontrar o filme.' });
